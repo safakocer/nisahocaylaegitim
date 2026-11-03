@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nisa Hocayla Eğitim Bilişsel Performans Testi</title>
+    
+    <meta property="og:title" content="Nisa Hocayla Eğitim | Bilişsel Performans Testi">
+    <meta property="og:description" content="Öğrenme profilinizi, dikkat sürenizi ve analitik becerilerinizi keşfetmek için hazırlanan özel öğrenci değerlendirme envanteri.">
+    <meta property="og:image" content="https://nisahocaylabilisselperformanstesti.netlify.app/kapak.png">
+    <meta property="og:type" content="website">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #F4F7F6;
+            --card-bg: #FFFFFF;
+            --primary: #7895B2;
+            --primary-hover: #5A7692; 
+            --secondary: #AEBDCA;     
+            --text-main: #334155;     
+            --text-light: #64748B;
+            --border-color: #E2E8F0;  
+            --accent-soft: #F1F6F9;   
+            --correct: #10B981;
+            --wrong: #EF4444;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #app {
+            position: relative;
+            background: var(--card-bg);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+            margin-top: 2vh;
+            margin-bottom: 4vh;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "NisaHocaylaEğitim";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 8vw;
+            color: rgba(120, 149, 178, 0.06);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 9999;
+            font-weight: 800;
+            user-select: none;
+        }
+
+        .screen {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1, h2, h3 {
+            color: var(--text-main);
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        h2 { font-size: 24px; margin-bottom: 20px; text-align: center; border-bottom: 2px solid var(--accent-soft); padding-bottom: 15px;}
+        
+        p { margin-bottom: 16px; font-size: 15.5px; line-height: 1.6; color: var(--text-main); }
+
+        .info-box {
+            background-color: var(--accent-soft); 
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 15px;
+            line-height: 1.7;
+            border-left: 4px solid var(--primary);
+        }
+
+        button.btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        button.btn-primary:hover { background: var(--primary-hover); }
+        button.btn-primary:active { transform: scale(0.98); }
+        button:disabled { background: var(--secondary); cursor: not-allowed; }
+
+        .hidden { display: none !important; }
+        
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .question-block:last-child { border-bottom: none; }
+        .question-text { font-weight: 600; margin-bottom: 15px; font-size: 16px; }
+        .question-image-box {
+            background: var(--accent-soft);
+            padding: 18px;
+            border-radius: 8px;
+            font-size: 15.5px;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--card-bg);
+        }
+        .option-label:hover { background: var(--accent-soft); border-color: var(--secondary); }
+        .option-label input[type="radio"] {
+            margin-right: 14px;
+            transform: scale(1.3);
+            accent-color: var(--primary);
+        }
+
+        #reading-passage {
+            font-size: 17px;
+            line-height: 1.9;
+            color: #1E293B;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        #letter-grid {
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 22px;
+            line-height: 2.2;
+            letter-spacing: 5px;
+            text-align: justify;
+            background: transparent;
+        }
+        .letter-item {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+            user-select: none;
+            display: inline-block;
+        }
+        .letter-item:hover { background: var(--border-color); }
+        .letter-item.selected {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+
+        .survey-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .survey-table th, .survey-table td {
+            border: 1px solid var(--border-color);
+            padding: 14px 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .survey-table th { background: var(--accent-soft); font-weight: 600; color: var(--text-main); }
+        .survey-table td.text-left { text-align: left; font-weight: 500; font-size: 15px; }
+        .survey-radio { transform: scale(1.4); accent-color: var(--primary); cursor: pointer; }
+
+        @media (max-width: 640px) {
+            #app { padding: 25px 20px; border-radius: 0; border: none; box-shadow: none; margin-top:0; }
+            .survey-table th:not(:first-child) { writing-mode: vertical-rl; transform: rotate(180deg); padding: 10px 5px; }
+            #letter-grid { font-size: 18px; letter-spacing: 2px; padding: 10px; }
+        }
+        
+        .name-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .name-input:focus {
+            border-color: var(--primary);
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="error-modal" class="hidden" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #EF4444; color: white; padding: 15px 25px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 12px rgba(239,68,68,0.3); font-weight: 500; text-align: center; width: 90%; max-width: 400px; transition: opacity 0.3s;">
+    Lütfen tüm alanları doldurunuz.
+</div>
+
+<div id="app">
+    
+    <!-- GİRİŞ EKRANI -->
+    <div id="screen-intro" class="screen">
+        <h2>Nisa Hocayla Eğitim Bilişsel Performans Testi</h2>
+        <p>Hoş geldin! Bu test, senin okuma hızını, dikkat süreni ve bilgiyi nasıl işlediğini analiz etmek için hazırlandı.</p>
+        <p>Bu bir sınav veya not verme aracı değildir. Sadece senin beyninin öğrenme haritasını çıkararak sana en uygun ders çalışma programını hazırlamamızı sağlayacak.</p>
+        
+        <div class="info-box">
+            <strong>Lütfen Başlamadan Önce Şunlara Dikkat Et:</strong><br><br>
+            • Testi kesinlikle sessiz bir ortamda, tek başına ve yardım almadan çözmelisin.<br>
+            • Telefonundaki diğer bildirimleri kapat. Tek bir oturuşta bitirmelisin (Yaklaşık 10 dk).<br>
+            • <strong>ÖNEMLİ:</strong> Geçtiğin bir sayfaya veya soruya geri dönme imkânın yoktur.<br>
+            • Test bittiğinde sonuçların otomatik olarak hocamıza iletilecektir.
+        </div>
+        
+        <div>
+            <label for="student-first" style="font-weight: 600; display: block; margin-bottom: 8px;">Öğrenci Adı-Soyadı:</label>
+            <div style="display: flex; gap: 12px;">
+                <input type="text" id="student-first" class="name-input" placeholder="Adı" autocomplete="given-name" required>
+                <input type="text" id="student-last" class="name-input" placeholder="Soyadı" autocomplete="family-name" required>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="startReadingInfo()">Teste Başla</button>
+    </div>
+
+    <!-- MODÜL 1: OKUMA BİLGİ EKRANI -->
+    <div id="screen-reading-info" class="screen hidden">
+        <h2>Modül 1: Hızlı Okuma ve Anlama</h2>
+        <p>İlk bölümümüz okuma alışkanlıklarını ölçmek içindir.</p>
+        <div class="info-box">
+            <strong>Yönerge:</strong><br><br>
+            Bir sonraki ekrana geçtiğinde karşına kısa bir metin çıkacak.<br>
+            • Metni <strong>kendi normal hızında</strong>, anlayarak içinden oku.<br>
+            • Okuman bittiği an, ekranın altındaki <strong>"Okudum"</strong> butonuna basmalısın.<br>
+            • Butona bastığında metin kaybolacak ve metinle alakalı 3 soru karşına çıkacak. Geri dönüp metne tekrar bakamayacaksın.<br>
+            Hazır hissettiğinde aşağıdaki butona bas.
+        </div>
+        <button class="btn-primary" onclick="startReadingText()">Metni Aç ve Süreyi Başlat</button>
+    </div>
+
+    <!-- MODÜL 1: OKUMA METNİ EKRANI -->
+    <div id="screen-reading-text" class="screen hidden">
+        <h2>Modül 1: Metni Oku</h2>
+        <div id="reading-passage">
+            Eski ahşap konağın gıcırdayan merdivenlerinden ağır ağır çıkarken, zamanın burada nasıl da asılı kaldığını düşündüm. Dışarıda, şehrin bitmek bilmeyen o gürültülü ve telaşlı akışı her şeyi yutarcasına ilerlerken; bu loş koridorda sadece geçmişin ağırbaşlı fısıltıları yankılanıyordu. Duvardaki kenarları kıvrılmış soluk fotoğraflar, bir zamanlar neşeyle çınlayan bu odaların artık derin ve kabullenilmiş bir sessizliğe büründüğünün en canlı şahitleriydi. Her bir köşeye sinmiş o rutubet ve lavanta kokusu karışımı, insana hem çocukluktan kalma tanıdık bir huzur hem de tarifsiz ince bir hüzün veriyordu. İnsan bazen en çok arkasında bırakıp kaçmak istediği anıların tam ortasında buluyordu kendini. Belki de mekânlar cansız yığınlar değil, bizim çoktan unuttuğumuzu sandığımız hisleri kendi duvarlarında inatla saklayan sadık birer bekçiydi.
+        </div>
+        <button class="btn-primary" onclick="finishReadingText()">Okudum (Metni Kapat)</button>
+    </div>
+
+    <!-- MODÜL 1: OKUMA SORULARI -->
+    <div id="screen-reading-questions" class="screen hidden">
+        <h2>Modül 1: Okuduğunu Anlama</h2>
+        <div class="info-box" style="background-color:#FFFBEB; border-color:#F59E0B; color:#92400E;">
+            Metin kayboldu. Şimdi okuduğun parça ile ilgili aşağıdaki soruları cevapla. (Bu modülde soruları boş bırakabilirsin).
+        </div>
+        <div id="reading-mcq-container"></div>
+        <button class="btn-primary" onclick="finishReadingQuestions()">Modül 2'ye Geç</button>
+    </div>
+
+    <!-- MODÜL 2: HARF TARAMA -->
+    <div id="screen-q1" class="screen hidden">
+        <h2>Modül 2: Çeldiricili Harf ve Sembol Tarama</h2>
+        <div class="info-box">
+            <strong>Yönerge: Sürdürülebilir Dikkat Görevi</strong><br><br>
+            Aşağıdaki karmaşık metin bloğunda yer alan tüm <strong>"b"</strong> harflerini bulup tıklamalısın.<br>
+            <strong>KURAL:</strong> Tıklayacağın "b" harfinin hemen sağında <strong>"k"</strong> harfi olmalıdır. (Yani "bk" yan yana olmalı).<br>
+            <strong>İSTİSNA:</strong> Eğer "b" harfinin hemen solunda <strong>"p"</strong> harfi varsa (Yani "pbk" yan yanaysa), kural bozulur. O "b" harfine <u>tıklamamalıydın.</u><br>
+            <em>Dikkatli ve hızlı ol.</em>
+        </div>
+        
+        <div id="letter-grid"></div>
+        
+        <button class="btn-primary" onclick="finishQ1()">Cevabımı Onayla ve Modül 3'e İlerle</button>
+    </div>
+
+    <!-- MODÜL 3: YENİ NESİL ANALİTİK SORULAR -->
+    <div id="screen-mcq" class="screen hidden">
+        <h2>Modül 3: Yeni Nesil Analitik Sorular</h2>
+        <div class="info-box" style="background-color:#FFFBEB; border-color:#F59E0B; color:#92400E;">
+            Dikkat: LGS formatına uygun analitik sorulardır. Zorlanabilirsin, boş bırakabilirsin, ancak lütfen mantığını yürütmeye çalış.
+        </div>
+        <div id="mcq-container"></div>
+        <button class="btn-primary" onclick="finishMCQ()">Modül 4'e Geç</button>
+    </div>
+
+    <!-- MODÜL 4: ANKET -->
+    <div id="screen-survey" class="screen hidden">
+        <h2>Modül 4: Çalışma Stratejileri ve Metabiliş Öz Değerlendirmesi</h2>
+        <div class="info-box">
+            <strong>Yönerge:</strong> Aşağıdaki ifadeleri dikkatlice okuyunuz. Son 1 ay içerisindeki ders çalışma durumunuza en uygun seçeneği işaretleyiniz. Doğru veya yanlış cevap yoktur, dürüstlük esastır. (Bu bölümdeki sorular boş bırakılamaz).
+        </div>
+        <table class="survey-table">
+            <thead>
+                <tr>
+                    <th>İfade</th>
+                    <th style="width: 15%;">Hiçbir Zaman (1)</th>
+                    <th style="width: 15%;">Bazen (2)</th>
+                    <th style="width: 15%;">Her Zaman (3)</th>
+                </tr>
+            </thead>
+            <tbody id="survey-tbody"></tbody>
+        </table>
+        <button class="btn-primary" id="btn-submit" onclick="submitTest()">Testi Tamamla ve Sonucu Gönder</button>
+    </div>
+
+    <!-- SONUÇ EKRANI -->
+    <div id="screen-result" class="screen hidden" style="text-align: center;">
+        <div id="loading-spinner" style="display:none; margin: 20px auto;">
+            <p style="color: var(--primary); font-weight: 600; font-size: 18px;">Sonuçlarınız gönderiliyor...<br>Lütfen bekleyiniz.</p>
+        </div>
+        <div id="success-message" style="display:none;">
+            <h2 style="color: var(--correct); font-size: 28px; border:none;">✅ Başarıyla Gönderildi</h2>
+            <p style="font-size: 16px;">Performansın, okuma hızın ve metabilişsel profilin başarıyla NİSA HOCA'ya iletildi.</p>
+            <p style="font-size: 16px;">Testi çözdüğün için teşekkür ederiz.</p>
+            <a id="wa-button" href="#" style="display:block; margin-top:20px; padding:14px; background:#25D366; color:white; border-radius:8px; text-decoration:none; font-weight:600; text-align:center;">WhatsApp'tan Bildir</a>
+        </div>
+        <div id="error-message" style="display:none;">
+             <h2 style="color: var(--wrong); font-size: 28px; border:none;">❌ Bir Hata Oluştu</h2>
+            <p style="font-size: 16px;">Sonuçlarınız gönderilirken bir sorun yaşandı. Lütfen internet bağlantınızı kontrol edip sayfayı yenilemeden tekrar deneyiniz.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const state = {
+        student_name: "",
+        reading_start_time: 0,
+        reading_seconds: 0,
+        reading_wpm: 0,
+        reading_answers: {},
+        q1_selected_indices: [],
+        q1_TP: 0, 
+        q1_FP: 0, 
+        mcq_answers: {},
+        survey_answers: []
+    };
+
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(screenId).classList.remove('hidden');
+        window.scrollTo(0,0);
+    }
+
+    function showError(msg) {
+        const modal = document.getElementById('error-modal');
+        modal.innerText = msg;
+        modal.classList.remove('hidden');
+        setTimeout(() => { modal.classList.add('hidden'); }, 3500);
+    }
+
+    // Sorun giderildi: nameInput kontrolü daha güvenilir hale getirildi.
+    function startReadingInfo() {
+        const firstInput = document.getElementById('student-first');
+        const lastInput = document.getElementById('student-last');
+        const firstName = firstInput ? firstInput.value.trim().replace(/\s+/g, ' ') : "";
+        const lastName = lastInput ? lastInput.value.trim().replace(/\s+/g, ' ') : "";
+        if (firstName.length < 2) {
+            showError("Lütfen öğrencinin adını giriniz.");
+            if (firstInput) firstInput.focus();
+            return;
+        }
+        if (lastName.length < 2) {
+            showError("Lütfen öğrencinin soyadını giriniz.");
+            if (lastInput) lastInput.focus();
+            return;
+        }
+        state.student_name = firstName + " " + lastName;
+        switchScreen('screen-reading-info');
+    }
+
+    const readingData = [
+        {
+            id: "R1",
+            text: "Soru 1: Yazarın mekânlar ile insan anıları arasında kurduğu ilişkiye göre, aşağıdakilerden hangisine ulaşılabilir?",
+            options: [
+                "İnsanlar geçmişteki acılarından ancak mekân değiştirdiklerinde kurtulabilirler.",
+                "Fiziksel çevre, insanın bilinçaltına ittiği duyguları muhafaza eden bir hafıza gibidir.",
+                "Eski yapılar yenilendikçe insanın geçmişe duyduğu özlem de zamanla azalır.",
+                "İnsan, hatırlamak istemediği hatıraları mekânlara yükleyerek onlardan uzaklaşır."
+            ],
+            correct: "B"
+        },
+        {
+            id: "R2",
+            text: "Soru 2: Parçanın anlatımıyla ilgili aşağıdakilerden hangisi söylenemez?",
+            options: [
+                "Zıtlıklardan yararlanılarak anlatıma derinlik katılmıştır.",
+                "İnsana ait özellikler doğadaki cansız varlıklara aktarılmıştır.",
+                "Gözlem gücü, farklı duyulara seslenen ayrıntılarla pekiştirilmiştir.",
+                "Yazar, içinde bulunduğu durumdan duyduğu pişmanlığı dile getirmiştir."
+            ],
+            correct: "D"
+        },
+        {
+            id: "R3",
+            text: "Soru 3: \"Zamanın asılı kalması\" sözüyle yazar konağın hangi özelliğini vurgulamak istemiştir?",
+            options: [
+                "Dış dünyadaki değişimin ve akışın konak üzerinde hiçbir etkisinin olmamasını",
+                "Konağın mimari yapısının yıllara meydan okuyacak kadar sağlam olmasını",
+                "İnsanların konakta vakit geçirirken saatin nasıl geçtiğini anlamamalarını",
+                "Konağın, içinde yaşayan insanların yaşlanmasını fiziksel olarak geciktirmesini"
+            ],
+            correct: "A"
+        }
+    ];
+
+    function startReadingText() {
+        switchScreen('screen-reading-text');
+        state.reading_start_time = Date.now();
+    }
+
+    function finishReadingText() {
+        const timeTakenMs = Date.now() - state.reading_start_time;
+        state.reading_seconds = (timeTakenMs / 1000).toFixed(1);
+        const wordCount = 112; 
+        
+        let wpm = Math.round((wordCount / (timeTakenMs / 1000)) * 60);
+        if (wpm > 1000) wpm = 1000; 
+        state.reading_wpm = wpm;
+
+        renderReadingMCQs();
+        switchScreen('screen-reading-questions');
+    }
+
+    function renderReadingMCQs() {
+        const container = document.getElementById('reading-mcq-container');
+        container.innerHTML = readingData.map(item => `
+            <div class="question-block">
+                <div class="question-text">${item.text}</div>
+                ${item.options.map((opt, i) => {
+                    const letter = String.fromCharCode(65 + i);
+                    return `
+                    <label class="option-label">
+                        <input type="radio" name="r_${item.id}" value="${letter}">
+                        <span><strong>${letter})</strong>${opt}</span>
+                    </label>
+                    `;
+                }).join('')}
+            </div>
+        `).join('');
+    }
+
+    function finishReadingQuestions() {
+        readingData.forEach(item => {
+            const selected = document.querySelector(`input[name="r_${item.id}"]:checked`);
+            state.reading_answers[item.id] = selected ? selected.value : "";
+        });
+
+        startTest(); 
+    }
+
+    const q1_string = "p b k m d b k q r s p b k z m n b k p b k b k l t r p b k z p b x v n m b k o p b k d e r f b k p b k s t u v b k p b k m z x l b k p b k a s d f g h j k l b k p b k z x c v b n m";
+    const q1_array = q1_string.split(" ");
+    const valid_b_indices = [5, 16, 21, 36, 46, 55, 64, 78]; 
+
+    const mcqData = [
+        {
+            id: 2,
+            text: "Soru 1: Çift Kural Takibi ve Sözel Örüntü",
+            desc: "Bir kelime dizisinde uygulanan kurallar şöyledir:\n1. Her kelime, bir önceki kelimenin son harfiyle başlamaktadır.\n2. Her kelimedeki sesli harf sayısı, sessiz harf sayısından azdır ve her adımda sesli harf sayısı 1 artmaktadır.\n\nDizi: TAÇ → ÇIRAK → ?",
+            q: "Buna göre, soru işareti (?) yerine hangi kelime gelmelidir?",
+            options: ["KELEBEKLER", "KONTROL", "KARANLIK", "KORUMA"],
+            correct: "C"
+        },
+        {
+            id: 3,
+            text: "Soru 2: Şifreleme ve Zihinsel Kodlama",
+            desc: "Bir gizli kodlama sisteminde kelimeler şu şekilde şifrelenmektedir:\n• KALE → 2143\n• LEKE → 4323",
+            q: "Buna göre aynı kurala göre LALE kelimesinin şifresi aşağıdakilerden hangisidir?",
+            options: ["4143", "4343", "2343", "4123"],
+            correct: "A"
+        },
+        {
+            id: 6,
+            text: "Soru 3: Bilişsel Yansıma ve Zihinsel Esneklik (Tuzak Soru)",
+            desc: "Kırtasiyede kalem ve defterin toplam fiyatı 110 TL’dir. Defterin fiyatı kalemin fiyatından 100 TL daha pahalıdır.",
+            q: "Buna göre kalem kaç TL’dir?",
+            options: ["10", "5", "15", "20"],
+            correct: "B"
+        },
+        {
+            id: 7,
+            text: "Soru 4: Mantıksal Sıralama Bulmacası",
+            desc: "Beş öğrenci (Ali, Berk, Ceyda, Deniz, Elif) bir sırada yan yana oturmaktadır.\n• Ali sıranın en başında değildir.\n• Ceyda ile Deniz yan yana oturmaktadır.\n• Berk, Elif'in hemen sağındadır.\n• Ali, Berk'in solundadır ancak arada başka biri vardır.",
+            q: "Bu bilgilere göre ortadaki (3. sıradaki) öğrenci kimdir?",
+            options: ["Ali", "Berk", "Ceyda", "Deniz"],
+            correct: "A"
+        },
+        {
+            id: 9,
+            text: "Soru 5: Parça - Bütün ve Kavramsal Sınıflandırma",
+            desc: "Aşağıdaki kelimelerden dört tanesi ortak bir gruba aittir, bir tanesi ise bu grubun dışındadır:\n\"Roman - Şiir - Biyografi - Sözlük - Hikâye\"",
+            q: "Grup dışı olan kelime aşağıdakilerden hangisidir?",
+            options: ["Şiir", "Biyografi", "Sözlük", "Hikâye"],
+            correct: "C"
+        }
+    ];
+
+    const surveyData = [
+        "Uzun okuma veya mantık gerektiren ders görevlerinde zihnim ilk 5-10 dakikadan sonra dağılır.",
+        "Bir soru veya ödev üzerinde çalışırken çevredeki küçük bir ses/görüntü dikkatimi böler.",
+        "Başladığım bir testi, paragrafı veya ödevi bitirmekte zorlanır, yarıda bırakıp başka şeye geçerim.",
+        "Masanın başına oturduğumda nereden ve nasıl başlayacağımı bilemeyip zaman kaybetme yaşarım.",
+        "Serbest zaman, telefon/oyun ve ders çalışma sürelerini dengelerken erteleme davranışı gösteririm.",
+        "Çalıştığım konunun ana fikrini çıkarma, özetleme veya zihin haritası yapma yöntemlerini kullanmam.",
+        "Bilgiyi sadece okur/ezberlerim; öğrenip öğrenmediğimi kendi kendime soru sorarak veya özetleme yaparak test etmem.",
+        "Zor bir soru veya deneme sınavı başladığı anda zihnimin tamamen boşaldığını hissederim.",
+        "\"Yapamayacağım, başaramayacağım\" korkusu yüzünden iyi bildiğim sorularda tereddüt ederim.",
+        "Bir hata yaptığımda veya düşük not aldığımda çalışma isteğimi kaybederim."
+    ];
+
+    function startTest() {
+        renderQ1();
+        switchScreen('screen-q1');
+    }
+
+    function renderQ1() {
+        const grid = document.getElementById('letter-grid');
+        grid.innerHTML = '';
+        q1_array.forEach((char, index) => {
+            const span = document.createElement('span');
+            span.className = 'letter-item';
+            span.innerText = char;
+            span.onclick = () => {
+                span.classList.toggle('selected');
+                if (span.classList.contains('selected')) {
+                    if(!state.q1_selected_indices.includes(index)) state.q1_selected_indices.push(index);
+                } else {
+                    state.q1_selected_indices = state.q1_selected_indices.filter(i => i !== index);
+                }
+            };
+            grid.appendChild(span);
+        });
+    }
+
+    function finishQ1() {
+        let tp = 0; let fp = 0;
+        state.q1_selected_indices.forEach(idx => {
+            if (valid_b_indices.includes(idx)) tp++;
+            else fp++;
+        });
+        state.q1_TP = tp;
+        state.q1_FP = fp;
+
+        renderMCQs();
+        switchScreen('screen-mcq');
+    }
+
+    function renderMCQs() {
+        const container = document.getElementById('mcq-container');
+        container.innerHTML = mcqData.map(item => `
+            <div class="question-block">
+                <div class="question-text">${item.text}</div>
+                <div class="question-image-box">${item.desc}</div>
+                <div style="font-weight: 500; margin-bottom: 15px;">${item.q}</div>
+                ${item.options.map((opt, i) => {
+                    const letter = String.fromCharCode(65 + i); 
+                    return `
+                    <label class="option-label">
+                        <input type="radio" name="q_${item.id}" value="${letter}">
+                        <span><strong>${letter})</strong>${opt}</span>
+                    </label>
+                    `;
+                }).join('')}
+            </div>
+        `).join('');
+    }
+
+    function finishMCQ() {
+        mcqData.forEach(item => {
+            const selected = document.querySelector(`input[name="q_${item.id}"]:checked`);
+            state.mcq_answers[`Q${item.id}`] = selected ? selected.value : ""; 
+        });
+
+        renderSurvey();
+        switchScreen('screen-survey');
+    }
+
+    function renderSurvey() {
+        const tbody = document.getElementById('survey-tbody');
+        tbody.innerHTML = surveyData.map((text, i) => `
+            <tr>
+                <td class="text-left">${i+1}. ${text}</td>
+                <td><input type="radio" name="sur_${i}" value="1" class="survey-radio"></td>
+                <td><input type="radio" name="sur_${i}" value="2" class="survey-radio"></td>
+                <td><input type="radio" name="sur_${i}" value="3" class="survey-radio"></td>
+            </tr>
+        `).join('');
+    }
+
+    async function submitTest() {
+        let allSurveyAnswered = true;
+        let firstUnansweredSurvey = null;
+        state.survey_answers = []; 
+        
+        surveyData.forEach((_, i) => {
+            const selected = document.querySelector(`input[name="sur_${i}"]:checked`);
+            if (selected) {
+                state.survey_answers.push(selected.value);
+            } else {
+                allSurveyAnswered = false;
+                if (firstUnansweredSurvey === null) firstUnansweredSurvey = i;
+            }
+        });
+
+        if (!allSurveyAnswered) {
+            showError("Lütfen anketteki tüm maddeleri işaretleyiniz.");
+            state.survey_answers = [];
+            
+            const targetRow = document.querySelector(`input[name="sur_${firstUnansweredSurvey}"]`);
+            if (targetRow) {
+                const tr = targetRow.closest('tr');
+                tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                tr.style.transition = "background-color 0.3s";
+                tr.style.backgroundColor = "rgba(239, 68, 68, 0.15)";
+                setTimeout(() => { tr.style.backgroundColor = "transparent"; }, 2500);
+            }
+            return;
+        }
+
+        const resultData = {
+            ogrenci: state.student_name,
+            tarih: new Date().toLocaleString('tr-TR'),
+            reading: { wpm: state.reading_wpm, saniye: state.reading_seconds, ans: state.reading_answers },
+            q1: { tp: state.q1_TP, fp: state.q1_FP },
+            mcq: state.mcq_answers,
+            anket: state.survey_answers
+        };
+
+        switchScreen('screen-result');
+        document.getElementById('loading-spinner').style.display = 'block';
+        document.getElementById('success-message').style.display = 'none';
+        document.getElementById('error-message').style.display = 'none';
+
+        try {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbx9cWmP7qZh0PRGBuREIrofBnpwKtxeH4mnPcLl4XES2HF-0k1zsMvFF2wTSik5c4cY/exec';
+            
+            const response = await fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(resultData),
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                }
+            });
+
+            if (!response.ok) throw new Error('Ağ hatası oluştu');
+            
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+            whatsappAc();
+
+        } catch (error) {
+            console.error('Hata:', error);
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('error-message').style.display = 'block';
+        }
+    }
+
+    function whatsappAc() {
+        var mesaj = state.student_name + " testi tamamladı.";
+        var link = "https://wa.me/905516866767?text=" + encodeURIComponent(mesaj);
+        var btn = document.getElementById("wa-button");
+        if (btn) btn.href = link;
+        setTimeout(function () { window.location.href = link; }, 1500);
+    }
+</script>
+
+</body>
+</html>
